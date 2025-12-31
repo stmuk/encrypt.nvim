@@ -4,8 +4,9 @@ local helpers = require("encrypt.helpers")
 ---@param lines string | string[]
 ---@param password string
 local function decrypt_lines(lines, password)
+  vim.env.AGE_PASSPHRASE = password
   return vim.fn.systemlist(
-    "base64 --decode | openssl enc -d -aes-256-cbc -pbkdf2 -salt -in - -out - -k " .. vim.fn.shellescape(password),
+    "age -d -j batchpass",
     lines
   )
 end
@@ -16,8 +17,9 @@ local function decrypt()
     vim.notify("Password can not be empty", vim.log.levels.ERROR)
     return
   end
-  local encrypted_lines = vim.api.nvim_buf_get_lines(0, 1, -1, false)
+  local encrypted_lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
   local decrypted_lines = decrypt_lines(encrypted_lines, password)
+  vim.env.AGE_PASSPHRASE = ""
   if vim.v.shell_error ~= 0 then
     vim.notify("Error decrypting", vim.log.levels.ERROR)
     return

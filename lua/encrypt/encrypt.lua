@@ -4,8 +4,9 @@ local helpers = require("encrypt.helpers")
 ---@param lines string | string[]
 ---@param password string
 local function encrypt_lines(lines, password)
+  vim.env.AGE_PASSPHRASE = password
   return vim.fn.systemlist(
-    "openssl enc -aes-256-cbc -pbkdf2 -salt -in - -out - -k " .. vim.fn.shellescape(password) .. " | base64",
+    "age -e -a -j batchpass",
     lines
   )
 end
@@ -20,8 +21,7 @@ local function encrypt()
   end
   local buf_lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
   local encrypted_lines = encrypt_lines(buf_lines, password)
-
-  table.insert(encrypted_lines, 1, helpers.ENCRYPTED_PREFIX)
+  vim.env.AGE_PASSPHRASE = password
 
   vim.fn.writefile(encrypted_lines, vim.fn.expand("%"))
   vim.bo.modified = false

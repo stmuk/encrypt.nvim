@@ -26,7 +26,7 @@ local getPasswordFactory = function()
 end
 
 local getPassword = getPasswordFactory()
-local ENCRYPTED_PREFIX = "# <<<encrypted>>>"
+local ENCRYPTED_PREFIX = "-----BEGIN AGE ENCRYPTED FILE-----"
 
 ---@enum buftype
 local BUFTYPE = {
