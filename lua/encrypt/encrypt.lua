@@ -11,7 +11,9 @@ local function encrypt_lines(lines, password)
 end
 
 local function encrypt()
-  local password = helpers.getPassword()
+  -- Check if this is first encryption (buffer is not already encrypted)
+  local is_first_encryption = not helpers.bufferEncrypted()
+  local password = helpers.getPassword(is_first_encryption)
   if not password then
     vim.notify("Password can not be empty", vim.log.levels.ERROR)
     return

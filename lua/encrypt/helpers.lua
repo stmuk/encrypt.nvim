@@ -2,13 +2,23 @@
 local getPasswordFactory = function()
   local bufferPasswordMap = {}
 
-  return function()
+  return function(confirm)
     local key = string.format("%s", vim.fn.bufnr())
     if bufferPasswordMap[key] == nil then
       password = vim.fn.inputsecret("Enter password: ")
       if password == "" then
         vim.notify("Password is cancelled", vim.log.levels.WARN)
+        return nil
       end
+      
+      if confirm then
+        local password_confirm = vim.fn.inputsecret("Confirm password: ")
+        if password ~= password_confirm then
+          vim.notify("Passwords do not match", vim.log.levels.ERROR)
+          return nil
+        end
+      end
+      
       bufferPasswordMap[key] = password
     end
     return bufferPasswordMap[key]
