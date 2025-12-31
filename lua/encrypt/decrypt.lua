@@ -29,6 +29,8 @@ local function decrypt()
     vim.bo.modifiable = true
     vim.api.nvim_buf_set_lines(0, 0, -1, false, decrypted_lines)
     vim.bo.modified = false
+    vim.opt_local.swapfile = false
+    vim.opt_local.undofile = false
   end)
 end
 
